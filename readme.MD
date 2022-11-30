@@ -11,9 +11,6 @@ pip3 install package_name
 #Installing virtualenv
 python3 -m pip install --user virtualenv
 
-#Installing packages
-python3 -m pip install **package-name**
-python3 -m pip install -r requirements.txt
 
 #Creating a virtual environment
 python3 -m venv env
@@ -21,6 +18,10 @@ python3 -m venv env
 source env/bin/activate
 # END vrnv
 deactivate
+
+#Installing packages
+python3 -m pip install **package-name**
+python3 -m pip install -r requirements.txt
 
 #How do I list my pip-installed packages inside a venv?
 pip list
