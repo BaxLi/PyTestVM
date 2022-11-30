@@ -17,4 +17,11 @@ python3 -m pip install -r requirements.txt
 
 #Creating a virtual environment
 python3 -m venv env
+# Start VENV
 source env/bin/activate
+# END vrnv
+deactivate
+
+#How do I list my pip-installed packages inside a venv?
+pip list
+
