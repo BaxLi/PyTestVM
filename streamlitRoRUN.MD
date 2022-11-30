@@ -15,6 +15,5 @@ Now close the terminal and connect with server in new terminal and run following
 
 # screen -list
 
-We have successfully completed with the installation process and also we have deployed our first app.
-
-In this article, we have seen how to install Streamlit on Ubuntu 20.04
+re-attach to the screen session
+# screen -r 23520
