@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image
-from segment import process
+from segmentEye import process
 
 st.title('Airplane segmentation demo')
 
@@ -14,7 +14,10 @@ if not image_file is None:
     # Открытие изображения
     image = Image.open(image_file)
     # Обработка изображения с помощью функции, реализованной в другом файле
-    results = process(image_file)
+    try:
+        results = process(image_file)
+    except:
+        results = [[], []]
     col1.text('Source image')
     # Вывод в первой колонке уменьшенного исходного изображения
     col1.image(results[0])

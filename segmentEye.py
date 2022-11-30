@@ -1,6 +1,6 @@
 from PIL import Image
 import numpy as np
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 MODEL_NAME = 'model_fmr_all.h5'
 model = load_model(MODEL_NAME)  # Загружаем веса
 INPUT_SHAPE = (28, 28, 1)
