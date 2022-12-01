@@ -1,6 +1,7 @@
 import numpy as np
 from PIL import Image, ImageOps
 from keras.models import load_model
+from keras.utils import img_to_array, load_img
 
 MODEL_NAME_polyakov = 'polyakov_unet5_1e3.h5'
 MODEL_NAME = 'MODEL_WEIGHTS_Final_Baxan_PSP_std_color_256x256_Real_Augment.h5'
@@ -38,7 +39,7 @@ def labels_to_rgb(image_list  # список одноканальных изоб
 def process_PSP_base(image_file):
     image = Image.open(image_file)  # Открытие обрабатываемого файла
     # Изменение размера изображения в соответствии со входом сети
-    resized_image = image.resize((INPUT_SHAPE[1], INPUT_SHAPE[0]))
+    resized_image = image.resize((IMG_WIDTH, IMG_HEIGHT))
     # Регулировка формы тензора для подачи в сеть
     # Запуск предсказания сети
     # Вычисление предсказания сети для картинок с отобранными индексами
@@ -47,33 +48,33 @@ def process_PSP_base(image_file):
     # Подготовка цветов классов для отрисовки предсказания
     prediction_array = labels_to_rgb(prediction_array[..., None])
 
-    # prediction_array = model.predict(array)
-    # # Нулевой канал предсказания (значения 0 - самолет, 1 - фон)
-    # prediction_array = np.split(prediction_array, 2, axis=-1)[0]
-    # # Создание массива нулей
-    # zeros = np.zeros_like(prediction_array)
-    # # Создание массива единиц
-    # ones = np.ones_like(prediction_array)
-    # prediction_array_4d = np.concatenate([255 * (prediction_array > 100), zeros, zeros, 128 * ones], axis=3)[
-    #     0].astype(np.uint8)  # Формирование тензора для наложения найденной маски
-    # # Преобразование тензора в изображение и подгонка его размера к исходному
-    # mask_image = Image.fromarray(prediction_array_4d).resize(image.size)
-    # # Добавление маски на исходное изображение
-    # image.paste(mask_image, (0, 0), mask_image)
-    # Возврат исходного уменьшенного изображения, найденной маски и исходного изображения с наложенной маской
     return resized_image, prediction_array,
 
 
 def process_polyacov(image_file, col):
     prediction_array_grey = None
-    image_gr = Image.open(image_file).resize(
-        (INPUT_SHAPE[1], INPUT_SHAPE[0]))  # Открытие обрабатываемого файла
-    image_gr = ImageOps.grayscale(image_gr)
-    prediction_array_grey = np.array(image_gr)
-    # prediction_array_grey = np.expand_dims(prediction_array_grey, axis=2)
-    col.text(f'img.shape={prediction_array_grey.shape}')
-    # prediction_array_grey = np.argmax(
-    #     model.predict(prediction_array_grey), axis=-1)
+    # image = type=<class 'PIL.PngImagePlugin.PngImageFile'>
+    image = Image.open(image_file)
+    # image_gr type=<class 'PIL.Image.Image'>
+    image_gr = ImageOps.grayscale(image.resize((IMG_WIDTH, IMG_HEIGHT)))
+
+    # col.text(f'st.image type={type(image)}')
+    # col.text(f'st.image_GR!!! type={type(image_gr)}')
+    # Загружаем изображение для функции предсказания.
+    # img0 = image.load_img(im, color_mode='grayscale', target_size=(IMG_HEIGHT, IMG_WIDTH))
+
+    # image_grX shape = (256, 256, 1)
+    image_grX = img_to_array(image_gr)
+    # col.text(f'image_grX shape = {image_grX.shape}')
+    # image_grX = np.squeeze(image_grX, axis=-1)
+    # col.text(f'image_grX_2 shape = {image_grX.shape}')
+    # Переводим в нампи и нормализуем.
+    image_grX = np.array([image_grX])
+    prediction_array_grey = np.array(image_grX)/255
+    # col.text(f'grX.shape={type(image_grX)}')
+    # col.text(f'{image_grX}')
+    # predict = np.argmax(
+    #     model.predict([prediction_array_grey]), axis=-1)
     # Подготовка цветов классов для отрисовки предсказания
-    # prediction_array_grey = labels_to_rgb(prediction_array_grey[..., None])
+    # prediction_array_grey = labels_to_rgb(predict[..., None])
     return image_gr, prediction_array_grey
