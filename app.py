@@ -2,6 +2,7 @@ import streamlit as st
 from PIL import Image
 from segment import process_PSP_base, process_Gray_PSP
 
+counter = 0
 st.title("EYE'S segmentation demo")
 results = []
 # Добавление загрузчика файлов
@@ -13,14 +14,15 @@ results_grey_psp = None
 if not image_file is None:                    # Выполнение блока, если загружено изображение
     # Создание 2 колонок # st.beta_columns(2)
     col1, col2, col3 = st.columns(3)
-    col2.header('   -')
+    col2.header(f' - - - ')
     col2.text('SEGMENTATION result')
     # col2.text(f'st.image type={type(image_file)}')
     image = Image.open(image_file)            # Открытие изображения
     # Обработка изображения с помощью функции, реализованной в другом файле
     results = process_PSP_base(image_file)
     results_grey_psp = process_Gray_PSP(image_file, col2)
-
+    counter = counter+1
+    col2.header(f' - {counter} - ')
     with col1:
         st.header('Original image')
         st.text('PSP Color-256')
